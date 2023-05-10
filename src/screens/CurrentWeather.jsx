@@ -6,29 +6,59 @@ import {
   StatusBar,
   ImageBackground,
 } from "react-native";
-import React from "react";
-import { Octicons } from "@expo/vector-icons";
+import React, { useEffect, useState } from "react";
+import { Feather } from "@expo/vector-icons";
+import { weatherType } from "../utilities/weatherType";
 
-export default function CurrentWeather() {
+export default function CurrentWeather({ currentWeatherData }) {
+  const {
+    mainWrapper,
+    bgImage,
+    weatherContainer,
+    temperatureStyle,
+    temperatureFeels,
+    highLowContainer,
+    highLowText,
+    statusContainer,
+    weatherStatus,
+    message,
+  } = styles;
+
+  const [weatherCondition, setWeatherCondition] = useState("Snow");
+  console.log("currentWeatheer", currentWeatherData);
+
+  useEffect(() => {
+    if (!currentWeatherData) {
+      return;
+    } else {
+      // setWeatherCondition(currentWeatherData.list[0].weather[0].main);
+    }
+  }, []);
+
+  console.log("bg", weatherType[weatherCondition].backgroundColor);
   return (
-    <SafeAreaView style={styles.mainWrapper}>
-      <ImageBackground
-        source={require("../../assets/bg_images/sunny_clouds.jpg")}
-        style={styles.bgImage}>
-        <View style={styles.weatherContainer}>
-          <Octicons name="sun" size={150} color="orange" />
-          <Text style={styles.temperature}>6 </Text>
-          <Text style={styles.temperatureFeels}>Feels like 5</Text>
-          <View style={styles.highLowContainer}>
-            <Text style={styles.highLowText}>High: 32</Text>
-            <Text style={styles.highLowText}>Low: 25</Text>
-          </View>
+    <SafeAreaView
+      style={{
+        backgroundColor: weatherType[weatherCondition].backgroundColor,
+        flex: 1,
+      }}>
+      <View style={weatherContainer}>
+        <Feather
+          name={weatherType[weatherCondition].icon}
+          size={150}
+          color="orange"
+        />
+        <Text style={temperatureStyle}>6 </Text>
+        <Text style={temperatureFeels}>Feels like 5</Text>
+        <View style={highLowContainer}>
+          <Text style={highLowText}>High: 32</Text>
+          <Text style={highLowText}>Low: 25</Text>
         </View>
-        <View style={styles.statusContainer}>
-          <Text style={styles.weatherStatus}>Its sunny</Text>
-          <Text style={styles.message}>Its perfect t-shirt weather</Text>
-        </View>
-      </ImageBackground>
+      </View>
+      <View style={statusContainer}>
+        <Text style={weatherStatus}>Its sunny</Text>
+        <Text style={message}>{weatherType[weatherCondition].message}</Text>
+      </View>
     </SafeAreaView>
   );
 }
@@ -37,7 +67,7 @@ const styles = StyleSheet.create({
   mainWrapper: {
     flex: 1,
     backgroundColor: "black",
-    marginTop: StatusBar.currentHeight || 0,
+    // marginTop: StatusBar.currentHeight || 0,
   },
   bgImage: {
     flex: 1,
@@ -47,7 +77,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  temperature: {
+  temperatureStyle: {
     fontSize: 120,
     fontWeight: 400,
     // color: "white",
