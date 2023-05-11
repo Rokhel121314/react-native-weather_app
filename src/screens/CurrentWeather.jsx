@@ -3,17 +3,33 @@ import {
   Text,
   View,
   SafeAreaView,
-  StatusBar,
   ImageBackground,
 } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useContext } from "react";
 import { Feather } from "@expo/vector-icons";
 import { weatherType } from "../utilities/weatherType";
+import { weatherContext } from "../../context/WeatherApi";
+import { ActivityIndicator } from "react-native";
 
-export default function CurrentWeather({ currentWeatherData }) {
+export default function CurrentWeather() {
+  const { weather, isLoading, error } = useContext(weatherContext);
+
+  const currentWeatherType = weather?.list[0].weather[0].main;
+  const currentWeatherMessage = weather?.list[0].weather[0].description;
+  const currentTemperature = weather?.list[0].main.temp;
+  const currentTempMin = weather?.list[0].main.temp_min;
+  const currentTempMax = weather?.list[0].main.temp_max;
+  const currentTempFeelsLike = weather?.list[0].main.feels_like;
+
+  console.log(
+    "test",
+    currentTemperature,
+    currentTempFeelsLike,
+    currentTempMax,
+    currentTempMin,
+    currentWeatherMessage
+  );
   const {
-    mainWrapper,
-    bgImage,
     weatherContainer,
     temperatureStyle,
     temperatureFeels,
@@ -22,52 +38,59 @@ export default function CurrentWeather({ currentWeatherData }) {
     statusContainer,
     weatherStatus,
     message,
+    activityIndicatorWrapper,
+    currentWeatherBackground,
+    bgImage,
   } = styles;
 
-  const [weatherCondition, setWeatherCondition] = useState("Snow");
-  console.log("currentWeatheer", currentWeatherData);
+  if (isLoading && !weather?.list) {
+    return (
+      <View style={activityIndicatorWrapper}>
+        <ActivityIndicator size={100} color={"tomato"} />
+      </View>
+    );
+  }
 
-  useEffect(() => {
-    if (!currentWeatherData) {
-      return;
-    } else {
-      // setWeatherCondition(currentWeatherData.list[0].weather[0].main);
-    }
-  }, []);
-
-  console.log("bg", weatherType[weatherCondition].backgroundColor);
   return (
-    <SafeAreaView
-      style={{
-        backgroundColor: weatherType[weatherCondition].backgroundColor,
-        flex: 1,
-      }}>
-      <View style={weatherContainer}>
-        <Feather
-          name={weatherType[weatherCondition].icon}
-          size={150}
-          color="orange"
-        />
-        <Text style={temperatureStyle}>6 </Text>
-        <Text style={temperatureFeels}>Feels like 5</Text>
-        <View style={highLowContainer}>
-          <Text style={highLowText}>High: 32</Text>
-          <Text style={highLowText}>Low: 25</Text>
+    <SafeAreaView style={currentWeatherBackground}>
+      <ImageBackground
+        style={bgImage}
+        source={{
+          uri: weatherType[currentWeatherType].bgURL,
+        }}>
+        <View style={weatherContainer}>
+          <Feather
+            name={weatherType[currentWeatherType].icon}
+            size={150}
+            color={"black"}
+          />
+          <Text style={temperatureStyle}>{`${currentTemperature}°C`}</Text>
+          <Text
+            style={
+              temperatureFeels
+            }>{`Feels like ${currentTempFeelsLike}°C`}</Text>
+          <View style={highLowContainer}>
+            <Text style={highLowText}>{`High: ${currentTempMax}°C`}</Text>
+            <Text style={highLowText}>{`Low: ${currentTempMin}°C`}</Text>
+          </View>
         </View>
-      </View>
-      <View style={statusContainer}>
-        <Text style={weatherStatus}>Its sunny</Text>
-        <Text style={message}>{weatherType[weatherCondition].message}</Text>
-      </View>
+        <View style={statusContainer}>
+          <Text style={weatherStatus}>{`${currentWeatherMessage}`}</Text>
+          <Text style={message}>{weatherType[currentWeatherType].message}</Text>
+        </View>
+      </ImageBackground>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  mainWrapper: {
+  currentWeatherBackground: {
     flex: 1,
-    backgroundColor: "black",
-    // marginTop: StatusBar.currentHeight || 0,
+  },
+  activityIndicatorWrapper: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
   },
   bgImage: {
     flex: 1,
@@ -78,19 +101,18 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   temperatureStyle: {
-    fontSize: 120,
+    fontSize: 90,
     fontWeight: 400,
-    // color: "white",
   },
   temperatureFeels: {
-    fontSize: 48,
+    fontSize: 32,
     // color: "white",
   },
   highLowContainer: {
     flexDirection: "row",
   },
   highLowText: {
-    fontSize: 32,
+    fontSize: 28,
     marginHorizontal: 10,
     // color: "white",
   },

@@ -2,52 +2,17 @@ import {
   StyleSheet,
   Text,
   SafeAreaView,
-  StatusBar,
   FlatList,
   ImageBackground,
 } from "react-native";
-import React from "react";
+import React, { useContext } from "react";
 import UpcomingWeatherItem from "../components/UpcomingWeatherItem";
+import { weatherContext } from "../../context/WeatherApi";
 
 const UpcomingWeather = () => {
-  const DATA = [
-    {
-      dt_text: "2023-05-09",
-      main: {
-        temp_max: 8.55,
-        temp_min: 7.55,
-      },
-      weather: [
-        {
-          main: "Clear",
-        },
-      ],
-    },
-    {
-      dt_text: "2023-05-08",
-      main: {
-        temp_max: 8.55,
-        temp_min: 7.55,
-      },
-      weather: [
-        {
-          main: "Cloudy",
-        },
-      ],
-    },
-    {
-      dt_text: "2023-05-07",
-      main: {
-        temp_max: 8.55,
-        temp_min: 7.56,
-      },
-      weather: [
-        {
-          main: "Rainy",
-        },
-      ],
-    },
-  ];
+  const { weather } = useContext(weatherContext);
+  const weatherData = weather.list;
+  console.log("weatherData", weatherData);
 
   const { container, imageBackground, headerText } = styles;
 
@@ -58,16 +23,16 @@ const UpcomingWeather = () => {
         source={require("../../assets/bg_images/sunny_clouds.jpg")}>
         <Text style={headerText}>Upcoming Weather</Text>
         <FlatList
-          data={DATA}
+          data={weatherData}
           renderItem={({ item }) => (
             <UpcomingWeatherItem
               condition={item.weather[0].main}
-              dt_text={item.dt_text}
+              dt_txt={item.dt_txt}
               max={item.main.temp_max}
               min={item.main.temp_min}
             />
           )}
-          keyExtractor={(item) => item.dt_text}
+          keyExtractor={(_, index) => index}
         />
       </ImageBackground>
     </SafeAreaView>
@@ -79,7 +44,6 @@ export default UpcomingWeather;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
   },
   imageBackground: {
     flex: 1,
@@ -87,5 +51,6 @@ const styles = StyleSheet.create({
   headerText: {
     fontSize: 22,
     marginBottom: 10,
+    alignSelf: "center",
   },
 });

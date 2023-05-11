@@ -6,10 +6,21 @@ import {
   SafeAreaView,
   ImageBackground,
 } from "react-native";
-import React from "react";
+import React, { useContext } from "react";
 import IconText from "../components/IconText";
+import { weatherContext } from "../../context/WeatherApi";
+import moment from "moment/moment";
 
 const City = () => {
+  const { weather } = useContext(weatherContext);
+  console.log("country", weather);
+
+  const country = weather.city.country;
+  const city = weather.city.name;
+  const population = weather.city.population;
+  const sunrise = weather.city.sunrise;
+  const sunset = weather.city.sunset;
+
   const {
     container,
     imageBackground,
@@ -26,13 +37,13 @@ const City = () => {
       <ImageBackground
         source={require("../../assets/bg_images/manila_city.jpg")}
         style={imageBackground}>
-        <Text style={countryText}>Philippines</Text>
-        <Text style={provinceText}>Manila</Text>
+        <Text style={countryText}>{country}</Text>
+        <Text style={provinceText}>{city}</Text>
 
         <IconText
           iconName={"user"}
           iconColor={"red"}
-          text={10_000}
+          text={population}
           textStyles={populationText}
           iconTextContainerStyles={populationContainer}
         />
@@ -41,7 +52,7 @@ const City = () => {
           <IconText
             iconName={"sunrise"}
             iconColor={"white"}
-            text={"6:30:00 AM"}
+            text={moment(sunrise).format("h:mm:ss a")}
             textStyles={timeText}
             iconTextContainerStyles={setRiseContainer}
           />
@@ -49,7 +60,7 @@ const City = () => {
           <IconText
             iconName={"sunset"}
             iconColor={"white"}
-            text={"7:00:00 PM"}
+            text={moment(sunset).format("h:mm:ss a")}
             textStyles={timeText}
             iconTextContainerStyles={setRiseContainer}
           />

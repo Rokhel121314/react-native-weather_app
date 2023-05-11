@@ -17,7 +17,7 @@ export const useGetWeather = () => {
         `http://api.openweathermap.org/data/2.5/forecast?lat=${latitude}&lon=${longitude}&appid=${ApiKey}`
       );
       const data = await res.json();
-      setWeather(data);
+      setWeather(data.list[0]);
     } catch (error) {
       console.log("error", error);
       setError("Could not fetch weather");
