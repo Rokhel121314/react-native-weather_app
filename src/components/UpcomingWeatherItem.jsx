@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View } from "react-native";
 import React from "react";
-import { Ionicons } from "@expo/vector-icons";
+import { Feather } from "@expo/vector-icons";
 import { weatherType } from "../utilities/weatherType";
 import moment from "moment";
 
@@ -8,7 +8,7 @@ const UpcomingWeatherItem = (props) => {
   const { condition, dt_txt, min, max } = props;
   return (
     <View style={styles.weatherItemContainer}>
-      <Ionicons name={weatherType[condition].icon} size={70} color="black" />
+      <Feather name={weatherType[condition].icon} size={70} color="black" />
       <View>
         <Text style={styles.dateText}>{`${moment(dt_txt).format(
           "dddd"
